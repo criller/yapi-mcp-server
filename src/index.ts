@@ -16,6 +16,7 @@ import { getAllTools } from './tools/index.js';
 
 /**
  * 解析命令行参数
+ * 支持格式：--yapi-base-url=xxx 或 --yapi-base-url xxx
  */
 function parseArgs(): Partial<YapiConfig> {
     const args = process.argv.slice(2);
@@ -24,7 +25,19 @@ function parseArgs(): Partial<YapiConfig> {
     for (let i = 0; i < args.length; i++) {
         const arg = args[i];
 
-        if (arg === '--yapi-base-url' && i + 1 < args.length) {
+        // 支持 --key=value 格式
+        if (arg.includes('=')) {
+            const [key, ...valueParts] = arg.split('=');
+            const value = valueParts.join('='); // 处理 value 中可能包含 = 的情况
+
+            if (key === '--yapi-base-url') {
+                config.baseUrl = value;
+            } else if (key === '--yapi-token') {
+                config.token = value;
+            }
+        }
+        // 支持 --key value 格式
+        else if (arg === '--yapi-base-url' && i + 1 < args.length) {
             config.baseUrl = args[++i];
         } else if (arg === '--yapi-token' && i + 1 < args.length) {
             config.token = args[++i];

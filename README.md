@@ -23,10 +23,8 @@ A Model Context Protocol (MCP) server for YAPI API Platform integration. Enable 
       "args": [
         "-y",
         "yapi-mcp-server",
-        "--yapi-base-url",
-        "http://your-yapi-server.com",
-        "--yapi-token",
-        "your-token-here"
+        "--yapi-base-url=http://your-yapi-server.com",
+        "--yapi-token=your-token-here"
       ]
     }
   }
