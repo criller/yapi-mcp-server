@@ -22,7 +22,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "yapi-mcp-server",
+        "@criller/yapi-mcp-server",
         "--yapi-base-url=http://your-yapi-server.com",
         "--yapi-token=your-token-here"
       ]
@@ -75,7 +75,7 @@
   "mcpServers": {
     "yapi": {
       "command": "npx",
-      "args": ["-y", "yapi-mcp-server"],
+      "args": ["-y", "@criller/yapi-mcp-server"],
       "env": {
         "YAPI_BASE_URL": "http://your-yapi-server.com",
         "YAPI_TOKEN": "your-token-here"
@@ -129,7 +129,7 @@ npm run build
 
 ### 使用 MCP Inspector 测试
 ```bash
-npx @modelcontextprotocol/inspector npx -y yapi-mcp-server
+npx @modelcontextprotocol/inspector npx -y @criller/yapi-mcp-server
 ```
 
 ## 📁 项目结构
