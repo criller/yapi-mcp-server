@@ -6,13 +6,33 @@ import {
     CallToolRequestSchema,
     ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { getConfig, validateConfig } from './config.js';
+import { getConfig, validateConfig, type YapiConfig } from './config.js';
 import { YapiClient } from './yapi-client.js';
 import { getAllTools } from './tools/index.js';
 
 /**
  * YAPI MCP Server 主入口
  */
+
+/**
+ * 解析命令行参数
+ */
+function parseArgs(): Partial<YapiConfig> {
+    const args = process.argv.slice(2);
+    const config: Partial<YapiConfig> = {};
+
+    for (let i = 0; i < args.length; i++) {
+        const arg = args[i];
+
+        if (arg === '--yapi-base-url' && i + 1 < args.length) {
+            config.baseUrl = args[++i];
+        } else if (arg === '--yapi-token' && i + 1 < args.length) {
+            config.token = args[++i];
+        }
+    }
+
+    return config;
+}
 
 // 创建 MCP Server 实例
 const server = new Server(
@@ -32,8 +52,24 @@ let yapiClient: YapiClient;
 let tools: any[];
 
 try {
-    // 获取并验证配置
-    const config = getConfig();
+    // 解析命令行参数
+    const cliArgs = parseArgs();
+
+    // 获取配置（优先使用命令行参数，其次是环境变量）
+    let config: YapiConfig;
+
+    if (cliArgs.baseUrl && cliArgs.token) {
+        // 使用命令行参数
+        config = { baseUrl: cliArgs.baseUrl, token: cliArgs.token };
+    } else {
+        // 使用环境变量
+        config = getConfig();
+        // 如果有命令行参数，覆盖环境变量
+        if (cliArgs.baseUrl) config.baseUrl = cliArgs.baseUrl;
+        if (cliArgs.token) config.token = cliArgs.token;
+    }
+
+    // 验证配置
     validateConfig(config);
 
     // 创建 YAPI 客户端
